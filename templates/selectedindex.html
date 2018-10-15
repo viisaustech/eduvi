@@ -1,0 +1,97 @@
+
+
+    <!-- Bootstrap -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <link rel="shortcut icon" href="/static/motstatic/favicon.ico">
+      <link rel="stylesheet" href="/static/motstatic/bootstrap.min.css">
+      <link rel="stylesheet" href="/static/motstatic/custom.css">
+      <script src="/static/motstatic/jquery-1.11.3.min.js"></script>
+      <script src="/static/motstatic/bootstrap.min.js"></script>
+      <script src="/static/motstatic/vendor.js"></script>
+      <script src="/static/motstatic/main.js"></script>
+<!--   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+  <script type="text/javascript">
+
+    // selecting a session
+    // $(document).ready(function(){$('#fieldOFSpecialisation').change(
+    var specialisationtext
+    var schoolsessiontext
+function spec()
+      {
+        
+      options = '<option>Please Select a session</option>';
+      var specialization = document.getElementById('fieldOFSpecialisation')
+      specialisationtext = specialization.options[specialization.selectedIndex].text
+      // alert(specialisationtext)
+      $.ajax('school_session',{
+              type: 'POST',
+              // async: false,
+              data: JSON.stringify({fieldspecialisationtext: specialisationtext},null,'\t'),
+              contentType: 'application/json;charset=UTF-8',
+              success: function(result) {
+                                    var keys = $.parseJSON(result);
+                                    keys.sort();
+                                    $.each(keys, function(index, value){options += '<option value="'+ value +'">' + value + '</option>';});
+                                    $("#session").html(options);
+                                    // alert(options)
+                                    // $("#session").html(options);
+                                       }
+              }                        
+            )
+    }
+function schoolsession()
+      {
+      options = '<option>Please Select a Class</option>';
+      var schoolsession = document.getElementById('session')
+      schoolsessiontext = schoolsession.options[schoolsession.selectedIndex].text
+      // alert(specialisationtext)
+      $.ajax('/school_class',{
+              type: 'POST',
+              // async: false,
+              data: JSON.stringify({fieldspecialisationtext: specialisationtext, fieldschoolsessiontext: schoolsessiontext},null,'\t'),
+              contentType: 'application/json;charset=UTF-8',
+              success: function(result) {
+                                    var keys = $.parseJSON(result);
+                                    keys.sort();
+                                    $.each(keys, function(index, value){options += '<option value="'+ value +'">' + value + '</option>';});
+                                    $("#htclass").html(options);
+                                    // alert(options)
+                                    // $("#session").html(options);
+                                       }
+              }                        
+            )
+    }
+
+    $(function(){$('#fieldOFSpecialisation').change(spec)});
+    $(function(){$('#session').change(schoolsession)});
+    
+    
+        /* event listener */
+      // document.getElementById('fieldOFSpecialisation').addEventListener('change', spec);
+  </script>
+
+</head>
+<body>
+  <form action="/" method="POST">
+  <div class="control-group indexbody">
+    <select id="fieldOFSpecialisation" name="fieldOFSpecialisation" action="/topperformer">
+      {% for ht in fieldOFSpecialisation %}
+        <option value="{{ht}}">{{ht}}</option>"
+      {% endfor %}
+    </select><br/>
+  </div>
+    <select  id="session" type="text" class="form-control"  placeholder="select field" name="session" required=""></select><br/>
+     <select  id="htclass" type="text" class="form-control"  placeholder="select field" name="htclass" required=""></select><br/>
+    <input id="submit_input" type="submit" value="Alert" name="submit_input">
+  </form>
+
+
+
+</body>
+</html>
+

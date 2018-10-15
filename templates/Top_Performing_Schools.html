@@ -1,0 +1,54 @@
+  {% extends "base.html" %}
+
+      {% block content %}
+
+<link rel="shortcut icon" href="/static/motstatic/favicon.ico">
+<link rel="stylesheet" href="/static/motstatic/bootstrap.min.css">
+
+<style type="text/css">
+	.centerText{
+   text-align: center;
+}
+  table.center {
+    width:100%; 
+    margin-left:23%; 
+    margin-right:20%;
+  }
+</style>
+
+
+	<div class="row">
+		<div>
+			<table class="table table-striped center ">
+				
+				<tr class="text-blue-big">
+				    <th class="header">Names of School(s)</th>
+				    <th class="header">Number of Top Performers</th>	
+				    <th class="header">Total Number of Students</th>
+				    <th class="header">%</th>	
+			    </tr>
+				
+				
+				{% for school, Performer_Value in Performing_School_Result.items() %}
+					<tr>
+						<td class="value-cell centerText" >				
+							<b>{{ school }}</b>						
+						</td>
+						<td class="value-cell centerText">
+						<b>{{ Performer_Value[1] }}</b>
+						</td>
+						<td class="value-cell centerText" >				
+						<b>{{ Performer_Value[2] }}</b>						
+						</td>
+						<td class="value-cell centerText">
+						<b>{{ Performer_Value[0] }}</b>
+						</td>
+					</tr>			
+				{% endfor %}
+			</table>
+		</div>
+
+		</div>
+	</div>
+ {% endblock %}	
+	

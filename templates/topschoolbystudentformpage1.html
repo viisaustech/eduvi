@@ -1,0 +1,80 @@
+ {% extends "base.html" %}
+      {% block content %}  
+	
+
+    <!-- BANNER -->
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container" >
+        <a class="navbar-brand" href="index.html" style="color: black"><b>Home</b></a> 
+      </div>
+    </nav>
+            <div id="banner" class="advert" data-section="1">
+                <div class="banner-container">
+                    <content class="banner-col">
+                        <h1 class="banner-title banner-format" style="font-size:50px">Top Performing Schools in <span id="banner-typeset" class="text-blue"></span></h1>                 
+                    </content><!-- .banner-col-centered -->
+                </div><!-- .banner-container -->                
+            </div><!-- .banner-section -->
+    <form method="POST">
+    <fieldset>
+
+    <!-- Form Name -->
+    
+    <!-- Car Make Selection -->
+
+    <!-- Student and School Performance category -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="car-model-input" style="font-size:15 "><b><i>Select</i> Field of Specialization</b></label>
+      <div class="controls">
+        <div class="input-append">
+          <input  type="text" class="form-control" list= "browser" placeholder="select field" required="">
+          <datalist id="browser">
+            <option value="Mathematics/Science">
+            <option value="Humanities">
+            <option value="Business Studies">
+            <option value="Technology">  
+          </datalist>
+        </div>
+      </div>
+    </div>
+
+    <!-- Select School Session -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="car-year-input" style="font-size:15px"><b><i>Select</i> Session</b> <!--(<i>optional</i>)--></label>
+      <div class="controls">
+        <div class="input-append">
+          <input  type="text" class="form-control"  placeholder="select field" required="">
+        </div>
+      </div>
+    </div>
+
+    <!-- Selecting Class SS1 SS2 and SS3 -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="car-year-input" style="font-size:15px"><b><i>Select</i> Class</b> <!--(<i>optional</i>)--></label>
+      <div class="controls">
+        <div class="input-append">
+          <input  type="text" class="form-control"  placeholder="select field" required="">
+        </div>
+      </div>
+    </div>
+
+    <!-- Selecting Subject-->
+    <div class="control-group indexbody">
+      <label class="control-label" for="car-year-input" style="font-size:15px"><b><i>Select</i> Subject</b> <!--(<i>optional</i>)--></label>
+      <div class="controls">
+        <div class="input-append">
+          <input  type="text" class="form-control" placeholder="select field" required="">
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Buttons -->
+    <div class="form-group indexbuttons">
+      <label class="col-md-4 control-label" for="submit-button"></label>
+      <div class="col-md-4">
+        <input id="submit-button" name="submit-button" class="btn btn-warning btn-lg" type="submit" value="Display Result"></input>
+      </div>
+    </div>
+
+
+ {% endblock %}

@@ -1,0 +1,119 @@
+  {% extends "base.html" %}
+
+      {% block content %}
+
+
+<link rel="shortcut icon" href="/static/motstatic/favicon.ico">
+<link rel="stylesheet" href="/static/motstatic/bootstrap.min.css">
+<link rel="stylesheet" href="/static/motstatic/custom.css">
+<script src="/static/motstatic/jquery-1.11.3.min.js"></script>
+<!-- <script src="/static/motstatic/bootstrap.min.js"></script> -->
+<!-- <script src="/static/motstatic/vendor.js"></script> -->
+<!-- <script src="/static/motstatic/main.js"></script> -->
+
+<script type="text/javascript">
+
+    // selecting a session
+    // $(document).ready(function(){$('#fieldOFSpecialisation').change(
+    var specialisationtext
+    var schoolsessiontext
+function spec()
+      {
+        
+      options = '<option>Please Select a Class</option>';
+      var specialization = document.getElementById('session')
+      specialisationtext = specialization.options[specialization.selectedIndex].text
+      // alert(specialisationtext)
+      $.ajax('/school_class_bysub',{
+              type: 'POST',
+              // async: false,
+              data: JSON.stringify({fieldspecialisationtext: specialisationtext},null,'\t'),
+              contentType: 'application/json;charset=UTF-8',
+              success: function(result) {
+                                    var keys = $.parseJSON(result);
+                                    keys.sort();
+                                    $.each(keys, function(index, value){options += '<option value="'+ value +'">' + value + '</option>';});
+                                    $("#class").html(options);
+                                    // alert(options)
+                                    // $("#session").html(options);
+                                       }
+              }                        
+            )
+    }
+function schoolsession()
+      {
+      options = '<option>Please Select a Class</option>';
+      var schoolclass = document.getElementById('htclass')
+      schoolsessiontext = schoolclass.options[schoolclass.selectedIndex].text
+      // alert(specialisationtext)
+      $.ajax('/school_class',{
+              type: 'POST',
+              // async: false,
+              data: JSON.stringify({fieldspecialisationtext: specialisationtext, fieldschoolsessiontext: schoolsessiontext},null,'\t'),
+              contentType: 'application/json;charset=UTF-8',
+              success: function(result) {
+                                    var keys = $.parseJSON(result);
+                                    keys.sort();
+                                    $.each(keys, function(index, value){options += '<option value="'+ value +'">' + value + '</option>';});
+                                    $("#subject").html(options);
+                                       }
+              }                        
+            )
+    }
+
+  $(function(){$('#session').change(spec)});
+  $(function(){$('#htclass').change(schoolsession)});    
+
+</script>
+
+<section class="py-5">
+<form action="/" method="POST">
+
+    <!-- Form Name -->
+    
+    <!-- Car Make Selection -->
+
+    <!-- Student and School Performance category -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="session-input" style="font-size:15px"><b><i>Select</i> field Of Specialization</b></label><br/>
+        <select id="session" name="session" action="/topperformerbysubject">
+          {% for data in data_sessions %}
+            <option value="{{data}}">{{data}}</option>"
+          {% endfor %}
+        </select>
+    </div>
+
+    <!-- Select Class -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="class-input" style="font-size:15px"><b><i>Select</i> Class</b></label>
+      <div class="controls">
+        <div class="input-append">
+          <select  id="htclass" name="htclass" required=""></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selecting subject  -->
+    <div class="control-group indexbody">
+      <label class="control-label" for="class-input" style="font-size:15px"><b><i>Select</i> Subject</b> <!--(<i>optional</i>)--></label>
+      <div class="controls">
+        <div class="input-append">
+          <select  id="subject" name="subject" required=""></select><br/>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Search Buttons -->
+    <div class="form-group indexbuttons">
+      <label class="col-md-4 control-label" for="submit-button"></label>
+      <div class="col-md-4">
+        <input id="submit_input" type="submit" value="Result" name="submit_input">
+      </div>
+    </div>
+
+</form> 
+</section>
+    
+ {% endblock %}
+
