@@ -31,9 +31,9 @@ def parse_file():
     Science_Mathematics_subject = ['Computer Studies','Mathematics','Civic Education','Further Mathematics','English Studies','Biology','Chemistry','Physics','Further Mathematics','Agriculture','Physical Education','Health Education']
     Technology_subject = ['Computer Studies','Mathematics','Civic Education','Further Mathematics','English Studies','Technical Drawing','General Metalwork','Basic Electricity','Electronics','Auto_Mechanics','Building Construction','Woodwork','Home Management','Food and Nutrition','Clothing and Textiles']
     Humanities_subject = ['Computer Studies','Mathematics','Civic Education','Further Mathematics','English Studies','Edo Language','Yoruba','English Literature','Geography','Government','Christian Religious Knowledge','Islamic Religious Knowledge','History','Visual Arts','Music','French Language','Economics','Arabic']
-    trade_csv = 'C:/Flaskproject/flask/trade_csv.csv'
+    trade_csv = 'C:/Flaskproject/flask/data/trade_csv.csv'
     trade_subject = pd.read_csv(trade_csv)
-    result_csv = 'C:/Flaskproject/flask/result.csv'
+    result_csv = 'C:/Flaskproject/flask/data/result.csv'
     result = pd.read_csv(result_csv)
     unique_session = result['session'].unique().tolist()
 
@@ -141,19 +141,35 @@ def getperformingschool():
     topschoolbysubject = dict_topschoolbysubject        
 getperformingschool()    
 
-def getsubject(school_subject):
+
+
+performing_school = {}
+def getperformingschoolsbysubject(school_subject):
+    global performing_school
+    student_over_70_dict = {}
+    Over_70_List = []
     school_list = list(school_subject.keys())
     for school in school_list:
         school_subject_list = school_subject[school]
         subject_counter = Counter(school_subject_list)
-        Total_performer = sum(subject_counter.values())
-        how do u select a range pf multiple keys in a dictionary
-        how do u use counter to count the number of time a specific value occured
+        Total_student = sum(subject_counter.values())
+        for key in subject_counter.keys(): 
+            if key in range[70:101]:
+                Over_70_List.append(subject_counter[key])
+        Total_student_over_70 = sum(Over_70_List)
+        if Total_student_over_70 < 0.2*Total_student:
+            continue
+        else:
+            percentage = round((100*Total_student_over_70 / Total_performer),1)
+            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student))
+    performing_school = student_over_70_dict 
+    return performing_school
+
 
 
 
 performer_dict = {}
-def getschools(School_Perform_Dict): 
+def getperformingschools(School_Perform_Dict): 
     global performer_dict
     performer_dict_medium = {}
     school_names = list(School_Perform_Dict.keys())
@@ -167,7 +183,14 @@ def getschools(School_Perform_Dict):
             continue
         else:
             percentage = round((100*Total_Top_Perform / Total_performer),1)
-            performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer))
+            if percentage in range[50:101]:
+                performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Top School'))
+            elif percentage in range[30:50]:
+                performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Good School'))
+            elif percentage in range[10:30]:
+                performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Average School'))
+            else:
+                performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Poor School'))
     performer_dict = performer_dict_medium   
     return performer_dict
 
@@ -181,7 +204,7 @@ def get_sorted_dict(sorted_performer):
     sorted_dict = sorted_dict_medium
     return sorted_dict
 
-# # get_sorted_dict(getschools(combined_dict['Science_Mathematics']['2011/2012']['SS 1']))
+# # get_sorted_dict(getperformingschools(combined_dict['Science_Mathematics']['2011/2012']['SS 1']))
 
 
 
@@ -221,7 +244,7 @@ def performerbysubject():
                    
 ### accepting Json value from top performing school
 @app.route('/school_session', methods=['GET', 'POST'])
-def getschoolsession():
+def getperformingschoolsession():
     fieldkey = request.json['fieldspecialisationtext']
     school_session = list(combined_dict[fieldkey].keys())
     school_sessio = json.dumps(school_session)
@@ -232,27 +255,47 @@ def getschoolclass():
     fieldkey = request.json['fieldspecialisationtext']
     sessionkey = request.json['fieldschoolsessiontext']
     school_class = list(combined_dict[fieldkey][sessionkey].keys())
-    school_clas = json.dumps(school_class)
-    return school_clas
+    school_level = json.dumps(school_class)
+    return school_level
 
 ### accepting Json value from top performing school by subject 
 
 @app.route('/school_class_bysub', methods=['GET', 'POST'])
 def getschoolclass():
     sessionkey = request.json['session']
-    school_session = list(topschoolbysubject[sessionkey].keys())
-    school_clas = json.dumps(school_session)
-    return school_clas
+    session_class = list(topschoolbysubject[sessionkey].keys())
+    school_class = json.dumps(session_class)
+    return school_class
 
-@app.route('/school_class', methods=['GET', 'POST'])
+
+
+
+@app.route('/school_class_by_subject', methods=['GET', 'POST'])
 def getschoolclass():
-    fieldkey = request.json['fieldspecialisationtext']
-    sessionkey = request.json['fieldschoolsessiontext']
-    school_class = list(combined_dict[fieldkey][sessionkey].keys())
-    school_clas = json.dumps(school_class)
-    return school_clas  
+    subject_list = []
+    session = request.json['fieldspecialisationtext']
+    level = request.json['fieldschoolsessiontext']
+    school_subject_list = list(topschoolbysubject[session][level].keys())
+    for subject, school_dict in topschoolbysubject[session][level].items():
+        for school, grade_list in school_dict.items():
+            if len(grade_list) > 10:
+                subject_list.append(subject)
+                break
+            else:
+                continue
+    pass_subject = json.dumps(subject_list)
+    return pass_subject
+             
+    #     for key, value in topschoolbysubject[session][level].items():
+    #     for key1
 
-
+    # for subject in school_subject_list:
+    #     subject_schools_dict = topschoolbysubject[session][level][subject]
+    #     number = sum(subject_schools_dict.values())
+    #     if number > 10:
+    #         subject_list.append(subject)
+    # pass_subject = json.dumps(subject_list)
+    # return pass_subject
 
 @app.route('/', methods=['POST'])
 def navigate():
@@ -262,9 +305,10 @@ def navigate():
     if request.form['submit_input'] == 'Display Results':
         return redirect("/GENERATE/{}/{}/{}".format(request.form['fieldOFSpecialisation'],
             request.form['session'], request.form['htclass']))
-    else: request.form['submit_input'] == 'Result':
-            return redirect("/GENERATE_Result/{}/{}/{}".format(request.form['session'],
-                request.form['htclass'], request.form['subject']))
+    else: 
+        request.form['submit_input'] == 'Result'
+        return redirect("/GENERATE_Result/{}/{}/{}".format(request.form['session'],
+            request.form['htclass'], request.form['subject']))
 
     # selectbutton = request.form['submit']
 
@@ -272,7 +316,7 @@ def navigate():
 
 @app.route('/GENERATE/<fieldOFSpecialisation>/<session>/<htclass>')
 def getcountschool_sessiones(fieldOFSpecialisation, session, htclass):
-    Top_Performing_Schools = get_sorted_dict(getschools(combined_dict[fieldOFSpecialisation][session][htclass]))
+    Top_Performing_Schools = get_sorted_dict(getperformingschools(combined_dict[fieldOFSpecialisation][session][htclass]))
     error = ''
     if not Top_Performing_Schools:
         error = 'There is no data'
@@ -282,8 +326,17 @@ def getcountschool_sessiones(fieldOFSpecialisation, session, htclass):
         return render_template("Top_Performing_Schools.html", Performing_School_Result=Top_Performing_Schools)
 
 
-@app.route('/GENERATE_Result/<fieldOFSpecialisation>/<session>/<htclass>')
-def getcountschool_sessiones(session, htclass, subject):        
+@app.route('/GENERATE_Result/<session>/<htclass>/<subject>')
+def getcountschool_sessiones(session, htclass, subject):
+    Top_Performing_Schools = get_sorted_dict(getperformingschoolsbysubject(topschoolbysubject[session][htclass][subject]))
+    error = ''
+    if not Top_Performing_Schools:
+        error = 'There is no data'
+        return render_template("error.html", error=error)
+    else:
+        # print(Top_Performing_Schools)
+        return render_template("Top_Performing_Schools.html", Performing_School_Result=Top_Performing_Schools)
+
 
 
 

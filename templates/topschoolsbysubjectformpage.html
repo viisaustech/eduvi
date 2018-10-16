@@ -33,20 +33,20 @@ function spec()
                                     var keys = $.parseJSON(result);
                                     keys.sort();
                                     $.each(keys, function(index, value){options += '<option value="'+ value +'">' + value + '</option>';});
-                                    $("#class").html(options);
+                                    $("#htclass").html(options);
                                     // alert(options)
                                     // $("#session").html(options);
                                        }
               }                        
             )
     }
-function schoolsession()
+function classsubject()
       {
-      options = '<option>Please Select a Class</option>';
+      options = '<option>Please Select a Subject</option>';
       var schoolclass = document.getElementById('htclass')
       schoolsessiontext = schoolclass.options[schoolclass.selectedIndex].text
       // alert(specialisationtext)
-      $.ajax('/school_class',{
+      $.ajax('/school_class_by_subject',{
               type: 'POST',
               // async: false,
               data: JSON.stringify({fieldspecialisationtext: specialisationtext, fieldschoolsessiontext: schoolsessiontext},null,'\t'),
@@ -61,8 +61,8 @@ function schoolsession()
             )
     }
 
-  $(function(){$('#session').change(spec)});
-  $(function(){$('#htclass').change(schoolsession)});    
+  $(function(){$('#htclass').change(spec)});
+  $(function(){$('#subject').change(classsubject)});    
 
 </script>
 

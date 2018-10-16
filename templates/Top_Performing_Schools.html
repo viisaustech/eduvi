@@ -25,7 +25,9 @@
 				    <th class="header">Names of School(s)</th>
 				    <th class="header">Number of Top Performers</th>	
 				    <th class="header">Total Number of Students</th>
-				    <th class="header">%</th>	
+				    <th class="header">%</th>
+				    <th class="header">rank</th>
+				    <th class="header">Type of School</th>	
 			    </tr>
 				
 				
@@ -42,6 +44,9 @@
 						</td>
 						<td class="value-cell centerText">
 						<b>{{ Performer_Value[0] }}</b>
+						</td>
+						<td class="value-cell centerText">
+						<b>{{ Performer_Value[3] }}</b>
 						</td>
 					</tr>			
 				{% endfor %}
