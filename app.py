@@ -1,3 +1,4 @@
+from __future__ import division
 from flask import Flask, render_template, request, jsonify, redirect
 import csv
 import os
@@ -5,6 +6,7 @@ from collections import Counter, OrderedDict
 from operator import itemgetter
 import pandas as pd
 import json
+
 
 #################### Global Dictionaries #################
 Business_Studies = {}
@@ -14,7 +16,8 @@ Humanities = {}
 combined_dict = {}
 
 ############ functions to create the main dictionaries ##########################
-
+result_csv = 'C:/Flaskproject/flask/data/result.csv'
+result = pd.read_csv(result_csv)
 
 def parse_file():
     global Business_Studies 
@@ -22,6 +25,7 @@ def parse_file():
     global Technology 
     global Humanities
     global combined_dict
+    global result
     Dict_Business_Studies = {}
     Dict_Science_Mathematics = {}
     Dict_Technology = {}
@@ -33,8 +37,6 @@ def parse_file():
     Humanities_subject = ['Computer Studies','Mathematics','Civic Education','Further Mathematics','English Studies','Edo Language','Yoruba','English Literature','Geography','Government','Christian Religious Knowledge','Islamic Religious Knowledge','History','Visual Arts','Music','French Language','Economics','Arabic']
     trade_csv = 'C:/Flaskproject/flask/data/trade_csv.csv'
     trade_subject = pd.read_csv(trade_csv)
-    result_csv = 'C:/Flaskproject/flask/data/result.csv'
-    result = pd.read_csv(result_csv)
     unique_session = result['session'].unique().tolist()
 
     #unique_student_id = result['student_id'].unique().tolist() 
@@ -131,9 +133,8 @@ topschoolbysubject = {}
 def getperformingschool():
     global topschoolbysubject
     dict_topschoolbysubject = {}
-    results_csv = 'C:/Flaskproject/flask/result.csv'
-    results = pd.read_csv(results_csv)
-    for row in results.itertuples(index=True, name='Pandas'):
+    global result
+    for row in result.itertuples(index=True, name='Pandas'):
         dict_topschoolbysubject.setdefault(getattr(row, "session"),{}).setdefault(getattr(row, "student_class"),
             {}).setdefault(getattr(row, "subject"),{}).setdefault(getattr(row, "school_name"),
                 []).append(getattr(row, "total_score"))
@@ -152,16 +153,23 @@ def getperformingschoolsbysubject(school_subject):
     for school in school_list:
         school_subject_list = school_subject[school]
         subject_counter = Counter(school_subject_list)
+        print(subject_counter)
         Total_student = sum(subject_counter.values())
+        print(Total_student)
+        print(list(subject_counter.keys()))
         for key in subject_counter.keys(): 
-            if key in range[70:101]:
+            if key in range(50,101):
                 Over_70_List.append(subject_counter[key])
+                print(Over_70_List)
+            else:
+                continue
         Total_student_over_70 = sum(Over_70_List)
         if Total_student_over_70 < 0.2*Total_student:
             continue
         else:
-            percentage = round((100*Total_student_over_70 / Total_performer),1)
+            percentage = int((100*Total_student_over_70 / Total_student))
             student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student))
+        Over_70_List = []
     performing_school = student_over_70_dict 
     return performing_school
 
@@ -182,12 +190,12 @@ def getperformingschools(School_Perform_Dict):
         if Total_Top_Perform < 0.02*Total_performer:
             continue
         else:
-            percentage = round((100*Total_Top_Perform / Total_performer),1)
-            if percentage in range[50:101]:
+            percentage = int((100*Total_Top_Perform / Total_performer))
+            if percentage in range(50,101):
                 performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Top School'))
-            elif percentage in range[30:50]:
+            elif percentage in range(30,50):
                 performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Good School'))
-            elif percentage in range[10:30]:
+            elif percentage in range(10,30):
                 performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Average School'))
             else:
                 performer_dict_medium.setdefault(school_name,(percentage,Total_Top_Perform,Total_performer,'Poor School'))
@@ -222,7 +230,7 @@ def performer():
     fieldOFSpecialisation.sort()
     return render_template("topschoolsformpage.html", fieldOFSpecialisation=fieldOFSpecialisation)
 
-@app.route("/topperformerbysubject")
+@app.route("/topschoolsbysubjectformpage")
 def performerbysubject():
     sessions = list(topschoolbysubject.keys())
     sessions.sort()
@@ -261,8 +269,8 @@ def getschoolclass():
 ### accepting Json value from top performing school by subject 
 
 @app.route('/school_class_bysub', methods=['GET', 'POST'])
-def getschoolclass():
-    sessionkey = request.json['session']
+def getschoolclass_sub():
+    sessionkey = request.json['fieldspecialisationtext']
     session_class = list(topschoolbysubject[sessionkey].keys())
     school_class = json.dumps(session_class)
     return school_class
@@ -271,7 +279,7 @@ def getschoolclass():
 
 
 @app.route('/school_class_by_subject', methods=['GET', 'POST'])
-def getschoolclass():
+def school_class_by_subject():
     subject_list = []
     session = request.json['fieldspecialisationtext']
     level = request.json['fieldschoolsessiontext']
@@ -281,8 +289,7 @@ def getschoolclass():
             if len(grade_list) > 10:
                 subject_list.append(subject)
                 break
-            else:
-                continue
+    # print(subject_list)
     pass_subject = json.dumps(subject_list)
     return pass_subject
              
@@ -327,7 +334,7 @@ def getcountschool_sessiones(fieldOFSpecialisation, session, htclass):
 
 
 @app.route('/GENERATE_Result/<session>/<htclass>/<subject>')
-def getcountschool_sessiones(session, htclass, subject):
+def getcountschool_sessiones1(session, htclass, subject):
     Top_Performing_Schools = get_sorted_dict(getperformingschoolsbysubject(topschoolbysubject[session][htclass][subject]))
     error = ''
     if not Top_Performing_Schools:
@@ -335,7 +342,7 @@ def getcountschool_sessiones(session, htclass, subject):
         return render_template("error.html", error=error)
     else:
         # print(Top_Performing_Schools)
-        return render_template("Top_Performing_Schools.html", Performing_School_Result=Top_Performing_Schools)
+        return render_template("resultfortopperformerbysubject.html", Performing_School_Result=Top_Performing_Schools)
 
 
 

@@ -36,6 +36,7 @@ function spec()
                                     $("#htclass").html(options);
                                     // alert(options)
                                     // $("#session").html(options);
+                              
                                        }
               }                        
             )
@@ -61,8 +62,8 @@ function classsubject()
             )
     }
 
-  $(function(){$('#htclass').change(spec)});
-  $(function(){$('#subject').change(classsubject)});    
+  $(function(){$('#session').change(spec)});
+  $(function(){$('#htclass').change(classsubject)});    
 
 </script>
 
@@ -108,9 +109,15 @@ function classsubject()
     <div class="form-group indexbuttons">
       <label class="col-md-4 control-label" for="submit-button"></label>
       <div class="col-md-4">
-        <input id="submit_input" type="submit" value="Result" name="submit_input">
+        <input id="submit_input" type="submit" value="Result" name="submit_input" >
       </div>
     </div>
+<!--     <div class="form-group indexbuttons">
+      <label class="col-md-4 control-label" for="submit-button"></label>
+      <div class="col-md-4">
+        <input id="submit_input" type="submit" onclick="spec()" name="submit_input" >
+      </div>
+    </div> -->
 
 </form> 
 </section>

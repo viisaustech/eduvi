@@ -14,40 +14,66 @@
     margin-left:23%; 
     margin-right:20%;
   }
+
+ .auto-index td:first-child:before
+{
+  counter-increment: Serial;      /* Increment the Serial counter */
+  content: "Serial is: " counter(Serial); /* Display the counter */
+}
+
+table#team-list {
+    counter-reset: rowNumber;
+}
+
+table#team-list tr:nth-child(n+2) {
+    counter-increment: rowNumber;
+}
+
+table#team-list tr:nth-child(n+2) td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
 </style>
 
-
+	<div class="container">
+	<h2 class="header">selections <span class="text-black">{{ fieldOFSpecialisation }} {{ session }} {{ htclass }}</span></h2>
+	
 	<div class="row">
 		<div>
-			<table class="table table-striped center ">
-				
+			<table class="table table-striped" id="team-list">
 				<tr class="text-blue-big">
+					<th class="header">Rank</th>
 				    <th class="header">Names of School(s)</th>
 				    <th class="header">Number of Top Performers</th>	
 				    <th class="header">Total Number of Students</th>
 				    <th class="header">%</th>
-				    <th class="header">rank</th>
 				    <th class="header">Type of School</th>	
 			    </tr>
 				
 				
 				{% for school, Performer_Value in Performing_School_Result.items() %}
 					<tr>
-						<td class="value-cell centerText" >				
-							<b>{{ school }}</b>						
-						</td>
 						<td class="value-cell centerText">
-						<b>{{ Performer_Value[1] }}</b>
 						</td>
 						<td class="value-cell centerText" >				
-						<b>{{ Performer_Value[2] }}</b>						
+							<a href=""><b>{{ school }}</b></a>						
 						</td>
 						<td class="value-cell centerText">
-						<b>{{ Performer_Value[0] }}</b>
+						<a><b>{{ Performer_Value[1] }}</b></a>
+						</td>
+						<td class="value-cell centerText" >				
+						<a><b>{{ Performer_Value[2] }}</b></a>						
 						</td>
 						<td class="value-cell centerText">
-						<b>{{ Performer_Value[3] }}</b>
+						<a><b>{{ Performer_Value[0] }}</b></a>
 						</td>
+						<td class="value-cell centerText">
+						<a><b>{{ Performer_Value[3] }}</b></a>
+						</td>
+<!-- 						<td>
+							<a href="'/GENERATE/<fieldOFSpecialisation>/<session>/<htclass>'"></a>
+						</td> -->
 					</tr>			
 				{% endfor %}
 			</table>
@@ -56,4 +82,3 @@
 		</div>
 	</div>
  {% endblock %}	
-	
