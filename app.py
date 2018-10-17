@@ -153,22 +153,28 @@ def getperformingschoolsbysubject(school_subject):
     for school in school_list:
         school_subject_list = school_subject[school]
         subject_counter = Counter(school_subject_list)
-        print(subject_counter)
+        # print(subject_counter)
         Total_student = sum(subject_counter.values())
-        print(Total_student)
-        print(list(subject_counter.keys()))
+        # print(Total_student)
+        # print(list(subject_counter.keys()))
         for key in subject_counter.keys(): 
             if key in range(50,101):
                 Over_70_List.append(subject_counter[key])
-                print(Over_70_List)
             else:
                 continue
         Total_student_over_70 = sum(Over_70_List)
-        if Total_student_over_70 < 0.2*Total_student:
-            continue
+        # if Total_student_over_70 < 0.2*Total_student:
+        #     continue
+        # else:
+        percentage = int((100*Total_student_over_70 / Total_student))
+        if percentage in range(70,101):
+            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student,'Top School'))
+        elif percentage in range(50,70):
+            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student,'Good School'))
+        elif percentage in range(30,50):
+            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student,'Average School'))
         else:
-            percentage = int((100*Total_student_over_70 / Total_student))
-            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student))
+            student_over_70_dict.setdefault(school,(percentage,Total_student_over_70,Total_student,'Poor School'))
         Over_70_List = []
     performing_school = student_over_70_dict 
     return performing_school
